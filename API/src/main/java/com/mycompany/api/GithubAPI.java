@@ -5,8 +5,6 @@
  */
 package com.mycompany.api;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,6 +12,8 @@ import com.google.gson.JsonParser;
 import java.io.IOException;
 import static java.lang.System.exit;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.HttpResponse;
@@ -44,71 +44,71 @@ public class GithubAPI implements Runnable {
             handleCommand();
 
             if (newCommand) {
-                int x,y=0;
-//                System.out.println("command: " + command);
+                int x, y = 0;
+                System.out.println("command: " + command);
                 newCommand = false;
                 command = command.trim();
-                if (command.startsWith("ghtool")) {                   
+                if (command.equals("ghtool")) {
+                    System.out.println("help");
+                } else if (command.startsWith("ghtool list")) {
                     String[] parts = command.split(" ");
-                    if (parts.length == 1) {
-                        System.out.println("help");
-                    } else if (parts.length == 2) {
+                    if (parts.length == 2) {
+                        //default value
                         x = 600;
+                        getLatestRepositories(x);
                     } else if (parts.length == 3) {
                         try {
                             x = Integer.parseInt(parts[2]);
-                            for (int i = 0; i < x;) {
-                                getEach(i);
-                                i = i + 200;
-                            }
+                            getLatestRepositories(x);
+
                         } catch (ParseException e) {
-                           //repositories by language 
-                            y=600;
-                            getRepositoriesByLanguage(y,parts[2]);
+                            //repositories by language 
+                            y = 600;
+                            getRepositoriesByLanguage(y, parts[2]);
 
-                        } 
-
-                    } 
-                    else if (parts.length == 4) {
-                        try {
-                            y = Integer.parseInt(parts[3]);
-                            for (int i = 0; i < y;) {
-                                getRepositoriesByLanguage(i,parts[2]);
-                                i = i + 200;
-                            }
-                        } catch (ParseException e) {
-                           //repositories by language
-                            
-
-                        } 
-
+                        }
+                    } else if (parts.length == 4) {
+                        y = Integer.parseInt(parts[3]);
+                        getRepositoriesByLanguage(y, parts[2]);
                     }
-                }
+                } else if (command != null && command.startsWith("ghtool desc")) {
+                    String[] parts = command.split(" ");
+                    if (parts.length == 2) {
+                        //desc command description
 
-            } else if (command.startsWith("ghtool desc")) {
-                String[] parts = command.split(" ");
-            } else if (command.equals("exit")) {
-                exit(0);
+                    } else if (parts.length > 2) {
+                        ExecutorService executor = Executors.newFixedThreadPool(5);//creating a pool of 5 threads  
+                        for (int i = 2; i < parts.length; i++) {
+                            Runnable worker = new RepoInformationThread(parts[i]);
+                            executor.execute(worker);//calling execute method of ExecutorService  
+                        }
+                        executor.shutdown();
+                        while (!executor.isTerminated()) {
+                        }
+
+                        System.out.println("Finished all threads");
+                    }
+
+                } else if (command != null && command.equals("exit")) {
+                    exit(0);
+                }   
+                System.out.println("Type a command>");
             }
-
         }
     }
 
-    public static void getEach(int since) {
-//        String url = "https://api.github.com/repositories?since=" + since + "&access_token=you-own-token";
-        String url = "https://api.github.com/repositories?since=" + since;
+    public static void getLatestRepositories(int numberOfRepositories) {
+        String url = "https://api.github.com/search/repositories?access_token=69bf3fb25c745c9ed7ff899b165ee496fb6923b5&q=in&sort=updated&order=desc";
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
             HttpGet request = new HttpGet(url);
             request.addHeader("content-type", "application/json");
             HttpResponse result = httpClient.execute(request);
+
             String json = EntityUtils.toString(result.getEntity(), "UTF-8");
-
-            System.out.println(json);
-
-            JsonElement jelement = new JsonParser().parse(json);
-            JsonArray jarr = jelement.getAsJsonArray();
-            for (int i = 0; i < jarr.size(); i++) {
+            JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+            JsonArray jarr = jsonObject.getAsJsonArray("items");
+            for (int i = 0; i < numberOfRepositories; i++) {
                 JsonObject jo = (JsonObject) jarr.get(i);
                 String fullName = jo.get("full_name").toString();
                 fullName = fullName.substring(1, fullName.length() - 1);
@@ -119,9 +119,9 @@ public class GithubAPI implements Runnable {
             System.out.println(ex.getStackTrace());
         }
     }
-    public static void getRepositoriesByLanguage(int since, String language) {
-//        String url = "https://api.github.com/repositories?since=" + since + "&access_token=you-own-token";
-          String url = "https://api.github.com/search/repositories?q=language:"+language+"&order=desc&since=" + since;
+
+    public static void getRepositoriesByLanguage(int numberOfRepositories, String language) {
+        String url = "https://api.github.com/search/repositories?access_token=69bf3fb25c745c9ed7ff899b165ee496fb6923b5&q=language:" + language + "&sort=updated&order=desc";
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
             HttpGet request = new HttpGet(url);
@@ -129,11 +129,9 @@ public class GithubAPI implements Runnable {
             HttpResponse result = httpClient.execute(request);
             String json = EntityUtils.toString(result.getEntity(), "UTF-8");
 
-            System.out.println(json);
-
-            JsonElement jelement = new JsonParser().parse(json);
-            JsonArray jarr = jelement.getAsJsonArray();
-            for (int i = 0; i < jarr.size(); i++) {
+            JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+            JsonArray jarr = jsonObject.getAsJsonArray("items");
+            for (int i = 0; i < numberOfRepositories; i++) {
                 JsonObject jo = (JsonObject) jarr.get(i);
                 String fullName = jo.get("full_name").toString();
                 fullName = fullName.substring(1, fullName.length() - 1);
@@ -157,10 +155,11 @@ public class GithubAPI implements Runnable {
     @Override
     public void run() {
         Scanner scanner = new Scanner(System.in);
-
+        System.out.println("Type a command>");
         while (true) {
+            
             command = scanner.nextLine();
-//            System.out.println("Input: " + command);
+            System.out.println("Input: " + command);
             newCommand = true;
         }
     }
