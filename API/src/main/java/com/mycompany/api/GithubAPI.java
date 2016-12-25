@@ -8,8 +8,6 @@ package com.mycompany.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.thoughtworks.xstream.core.util.Base64Encoder;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.System.exit;
@@ -44,34 +42,7 @@ public class GithubAPI implements Runnable {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-
-        InputStream stream = null;
-        int x = 0, y = 0;
-
-        try {
-
-            Properties prop = new Properties();
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            stream = loader.getResourceAsStream("access.properties");
-            prop.load(stream);
-
-            // get the property value and print it out
-            x = Integer.parseInt(prop.getProperty("defaultNumberOfRepos"));
-            y = Integer.parseInt(prop.getProperty("defaultNumberOfReposByLanguage"));
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
+    public static void main(String[] args) throws IOException {
         GithubAPI reader = new GithubAPI();
         Thread t = new Thread(reader);
         t.start();
@@ -84,31 +55,24 @@ public class GithubAPI implements Runnable {
                 newCommand = false;
                 command = command.trim();
                 if (command.equals("ghtool")) {
-                    System.out.println("help");
+                    System.out.println(getProperty("help.properties", "helpManual"));
                 } else if (command.startsWith("ghtool list")) {
                     String[] parts = command.split(" ");
                     if (parts.length == 2) {
-                        //default value                        
-                        getLatestRepositories(x);
+                        //default value                   
+                        getLatestRepositories(Integer.parseInt(getProperty("access.properties", "defaultNumberOfRepos")));
                     } else if (parts.length == 3) {
-                        try {
-                            x = Integer.parseInt(parts[2]);
-                            getLatestRepositories(x);
-
-                        } catch (ParseException e) {
-                            //repositories by language                             
-                            getRepositoriesByLanguage(y, parts[2]);
-
-                        }
+                        //repositories by language                        
+                        getRepositoriesByLanguage(Integer.parseInt(getProperty("access.properties", "defaultNumberOfReposByLanguage")), parts[2]);
                     } else if (parts.length == 4) {
-                        y = Integer.parseInt(parts[3]);
-                        getRepositoriesByLanguage(y, parts[2]);
+                        getLatestRepositories(Integer.parseInt(parts[3]));
+                    } else if (parts.length == 5) {
+                        getRepositoriesByLanguage(Integer.parseInt(parts[3]), parts[2]);
                     }
                 } else if (command != null && command.startsWith("ghtool desc")) {
                     String[] parts = command.split(" ");
                     if (parts.length == 2) {
-                        //desc command description
-
+                        System.out.println(getProperty("help.properties", "helpDesc"));
                     } else if (parts.length > 2) {
                         ExecutorService executor = Executors.newFixedThreadPool(5);//creating a pool of 5 threads  
                         for (int i = 2; i < parts.length; i++) {
@@ -132,6 +96,32 @@ public class GithubAPI implements Runnable {
         }
     }
 
+    public static String getProperty(String filename, String key) {
+        InputStream stream = null;
+        String value = "";
+        try {
+            Properties prop = new Properties();
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            stream = loader.getResourceAsStream(filename);
+            prop.load(stream);
+
+            // get the property value and print it out
+            value = prop.getProperty("defaultNumberOfRepos");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return value;
+    }
+
     public static void getLatestRepositories(int numberOfRepositories) {
         String url = "https://api.github.com/search/repositories?access_token=" + accessToken + "&q=in&sort=updated&order=desc&per_page=100";
         try {
@@ -143,7 +133,7 @@ public class GithubAPI implements Runnable {
             String json = EntityUtils.toString(result.getEntity(), "UTF-8");
             JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
             JsonArray jarr = jsonObject.getAsJsonArray("items");
-            
+
             for (int i = 0; i < numberOfRepositories; i++) {
                 JsonObject jo = (JsonObject) jarr.get(i);
                 String fullName = jo.get("full_name").toString();
@@ -222,15 +212,13 @@ public class GithubAPI implements Runnable {
 
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
             HttpPost request = new HttpPost(url);
-            request.addHeader("Authorization", "token "+token);
+            request.addHeader("Authorization", "token " + token);
             request.addHeader("content-type", "application/json");
             StringEntity params = new StringEntity("{ \n"
                     + "        \"name\": \"" + name + "\", \n"
-                    + "        \"description\": \"" + description + "\"\n"                
+                    + "        \"description\": \"" + description + "\"\n"
                     + "      }");
-            
-            
-            
+
             request.setEntity(params);
             HttpResponse result = httpClient.execute(request);
             String json = EntityUtils.toString(result.getEntity(), "UTF-8");
