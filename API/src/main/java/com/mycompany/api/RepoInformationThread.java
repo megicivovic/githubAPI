@@ -21,6 +21,7 @@ import org.apache.http.util.EntityUtils;
 class RepoInformationThread implements Runnable {
 
     private String repoID;
+    private static String accessToken="";
 
     public RepoInformationThread(String s) {
         this.repoID = s;
@@ -40,7 +41,7 @@ class RepoInformationThread implements Runnable {
             String user = id[0];
             String repoName = id[1];
 
-            String url = "https://api.github.com/search/repositories?access_token=69bf3fb25c745c9ed7ff899b165ee496fb6923b5&q="+repoName+"in:name+user:" + user;
+            String url = "https://api.github.com/search/repositories?access_token="+accessToken+"&q="+repoName+"in:name+user:" + user;
             try {
                 CloseableHttpClient httpClient = HttpClientBuilder.create().build();
                 HttpGet request = new HttpGet(url);
