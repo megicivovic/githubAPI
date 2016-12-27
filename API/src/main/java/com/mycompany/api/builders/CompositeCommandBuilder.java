@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.api;
+package com.mycompany.api.builders;
 
+import com.mycompany.api.actions.ActionCommand;
 import java.util.HashMap;
 
 /**

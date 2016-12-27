@@ -3,31 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.api;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+package com.mycompany.api.actions;
 
 /**
  *
  * @author Megi
  */
-class ActionTypeHelp implements ActionCommand {
+public class ActionTypeHelp implements ActionCommand {
+
+    private String command;
+
+    public ActionTypeHelp(String command) {
+        this.command = command;
+    }
 
     @Override
     public void execute() {
 
         try {
+            if (!command.equals("")) {
+                throw new Exception("Invalid exit command");
+            }
             ActionTypeDesc.displayHelp("description_command.txt");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-
     }
 
 }

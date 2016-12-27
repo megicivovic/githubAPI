@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.api;
+package com.mycompany.api.actions;
 
 /**
  *
  * @author Megi
  */
-public interface ICommandBuilder {
+public interface ActionCommand {
 
-    public ActionCommand getCommand(String command);
+    void execute();
 }

@@ -1,8 +1,15 @@
-package com.mycompany.api;
+package com.mycompany.api.main;
 
+import com.mycompany.api.actions.ActionCommand;
+import com.mycompany.api.actions.ActionTypeExit;
+import com.mycompany.api.actions.ActionTypeHelp;
+import com.mycompany.api.builders.CompositeCommandBuilder;
+import com.mycompany.api.builders.DescCommandBuilder;
+import com.mycompany.api.builders.ICommandBuilder;
+import com.mycompany.api.builders.ListCommandBuilder;
+import com.mycompany.api.builders.RepoCommandBuilder;
 import java.io.IOException;
 import java.util.Scanner;
-
 
 /**
  *
@@ -10,16 +17,27 @@ import java.util.Scanner;
  */
 public class GithubAPI {
 
-    private static Scanner scanner = new Scanner(System.in);
     private static CompositeCommandBuilder mainBuilder = new CompositeCommandBuilder();
-
-    ;
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
 
+        buildCompositeStructure();
+
+        while (true) {
+            System.out.println("Type a command>");
+
+            try {
+                handleCommand(getInput());
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private static void buildCompositeStructure() {
         CompositeCommandBuilder ghtoolBuilder = new CompositeCommandBuilder();
         ghtoolBuilder.registerBuilder("list", new ListCommandBuilder());
         ghtoolBuilder.registerBuilder("desc", new DescCommandBuilder());
@@ -27,7 +45,7 @@ public class GithubAPI {
         ghtoolBuilder.registerBuilder("", new ICommandBuilder() {
             @Override
             public ActionCommand getCommand(String command) {
-                return new ActionTypeHelp();
+                return new ActionTypeHelp(command);
             }
         });
 
@@ -35,14 +53,9 @@ public class GithubAPI {
         mainBuilder.registerBuilder("exit", new ICommandBuilder() {
             @Override
             public ActionCommand getCommand(String command) {
-                return new ActionTypeExit();
+                return new ActionTypeExit(command);
             }
         });
-
-        while (true) {
-            System.out.println("Type a command>");
-            handleCommand(getInput());
-        }
     }
 
     private static void handleCommand(String command) {
@@ -57,19 +70,12 @@ public class GithubAPI {
 
     }
 
-    private static void validateInput(String command) throws Exception {
-        if (command == null || command.length() == 0) {
-            throw new Exception("Command is empty or null");
-        }
-    }
-
-    static String getInput() {
+    public static String getInput() throws Exception {
+        Scanner scanner = new Scanner(System.in);
         String input = "";
-        try {
-            input = scanner.nextLine().trim();
-            validateInput(input);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        input = scanner.nextLine().trim();
+        if (input == null || input.length() == 0) {
+            throw new Exception("Command is empty or null");
         }
         return input;
     }
