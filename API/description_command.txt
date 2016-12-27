@@ -1,0 +1,3 @@
+ghtool desc <repo-id> <repo-id> ... - prikazuje neke informacije koje ti smatraš da su zanimljive o repozitorijumima čiji ID je prosleđen.
+ Informacije o repozitorijumima treba da dohvatiš u paralelno (u više thread-ova), 
+za razliku od pristupa gde bi dohvatila jedan repozitorijum, pa nakon njega drugi i tako dalje

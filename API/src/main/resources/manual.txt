@@ -1,0 +1,5 @@
+ ghtool - prikazuje kako se koristi tool
+    ghtool list - poslednjih X public repozitorijuma, gde X može da se specificira opciono kao command line argument (-n X), ali ima i default vrednost
+    ghtool list ruby - lista poslednjih X repozitorijuma za dati jezik (ruby u ovom slučaju), X ima istu semantiku kao u prošloj komandi
+    ghtool desc - prikazuje kako se koristi desc komanda
+    ghtool desc <repo-id> <repo-id> ... - prikazuje neke informacije koje ti smatraš da su zanimljive o repozitorijumima čiji ID je prosleđen. 
