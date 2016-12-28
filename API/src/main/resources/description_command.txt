@@ -1,2 +1,0 @@
-ghtool desc <repo-id> <repo-id> 
-This command displays full name and date of creation of the github repositories whose ids were passed

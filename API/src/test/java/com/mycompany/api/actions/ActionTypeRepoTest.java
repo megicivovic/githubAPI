@@ -5,10 +5,6 @@
  */
 package com.mycompany.api.actions;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -17,106 +13,100 @@ import static org.junit.Assert.*;
  * @author Magdalina Civovic
  */
 public class ActionTypeRepoTest {
-      MockedProvider mockedProvider; 
+
+    MockedGithubProvider provider = new MockedGithubProvider();
+
     public ActionTypeRepoTest() {
-        
+
     }
-    
-    @Before
-       void initializeProvider(){
-        mockedProvider = new MockedProvider();
-       }
-     /**
+
+    /**
      * Test of getNewAuthorization method, of class ActionTypeRepo.
      */
     @Test
     public void testGetNewAuthorization() throws Exception {
-        try {
-            String clientID = "21349375ffd36124f919";
-            String clientSecret = "2feb006b815111da9d9e65280e39aafbec2bdf41";
-            String username = "megicivovic";
-            String password = "Megica92*";
-            String note = "dd";            
-            String result = ActionTypeRepo.getNewAuthorization(clientID, clientSecret, username, password, note);
-        } catch (Exception exception) {
-              fail("Correct input failed");
-        }
-        
+
+        String clientID = "2134";
+        String clientSecret = "2feb00";
+        String username = "megicivovic";
+        String password = "*****";
+        String note = "dd";
+        String result = provider.getNewAuthorization(clientID, clientSecret, username, password, note);
+
+        assertEquals("fdkj943y2hfk", result);
+
     }
-     /**
+
+    /**
      * Test of getNewAuthorization method, of class ActionTypeRepo.
      */
     @Test
     public void testGetNewAuthorizationBadCredentials() throws Exception {
-        try {
-            String clientID = "21349375ffd36124f919";
-            String clientSecret = "2feb006b815111da9d9e65280e39aafbec2bdf41";
-            String username = "megicivovic,";
-            String password = "Megica92*";
-            String note = "dd";            
-            String result = ActionTypeRepo.getNewAuthorization(clientID, clientSecret, username, password, note);            
-        } catch (Exception exception) {
-              assertEquals("Bad credentials",exception.getMessage());
-        }
-        
+
+        String clientID = "213";
+        String clientSecret = "2feb";
+        String username = "megicivovic,";
+        String password = "*****";
+        String note = "dd";
+        String result = provider.getNewAuthorization(clientID, clientSecret, username, password, note);
+
+        assertEquals("Bad credentials", result);
+
     }
-     /**
+
+    /**
      * Test of getNewAuthorization method, of class ActionTypeRepo.
      */
     @Test
     public void testGetNewAuthorizationInvalidCLientSecretOrId() throws Exception {
-        try {
-            String clientID = "21349375ffd36124f919ff";
-            String clientSecret = "2feb006b815111da9d9e65280e39aafbec2bdf41";
-            String username = "megicivovic";
-            String password = "Megica92*";
-            String note = "dd";            
-            String result = ActionTypeRepo.getNewAuthorization(clientID, clientSecret, username, password, note);            
-        } catch (Exception exception) {
-              assertEquals("Invalid OAuth application client_id or secret.",exception.getMessage());
-        }
-        
+
+        String clientID = "2134937";
+        String clientSecret = "2feb006b815111da9d9e65280e39aafbec2bdf41";
+        String username = "megicivovic";
+        String password = "*****";
+        String note = "dd";
+        String result = provider.getNewAuthorization(clientID, clientSecret, username, password, note);
+
+        assertEquals("Invalid OAuth application client_id or secret.", result);
+
     }
-    
+
     /**
      * Test of getNewAuthorization method, of class ActionTypeRepo.
      */
     @Test
     public void testGetNewAuthorizationNullUsername() throws Exception {
+
+        String clientID = "2134937";
+        String clientSecret = "2feb006b815111da9d9e65280e39aafbec2bdf41";
+        String username = null;
+        String password = "*****";
+        String note = "dd";
         try {
-            String clientID = null;
-            String clientSecret = null;
-            String username = null;
-            String password = null;
-            String note = null;            
+            String result = provider.getNewAuthorization(clientID, clientSecret, username, password, note);
+            fail("Username passed as null!");
+        } catch (Exception e) {
             
-            new MockedProvider().
-            String result = mockedProvider.getNewAuthorization(clientID, clientSecret, username, password, note);            
-        } catch (Exception exception) {
-              assertEquals("Username may not be nul",exception.getMessage());
-        }
-        
+        }        
+
     }
+
     /**
      * Test of getNewAuthorization method, of class ActionTypeRepo.
      */
     @Test
     public void testCreateNewRepo() throws Exception {
-        try {
-            String clientID = null;
-            String clientSecret = null;
-            String username = null;
-            String password = null;
-            String note = null;            
-           String token = getNewAuthorization(clientID, clientSecret, username, password, note);
 
-                createNewRepo(token);      
-        } catch (Exception exception) {
-              assertEquals("Username may not be nul",exception.getMessage());
-        }
-        
+        String token = "fsgs";
+        String result = provider.createNewRepo(token);
+
+        assertEquals("megicivovic/myCoolRepo", result);
+       
+         token = "fsgsgdfgd";
+         result = provider.createNewRepo(token);
+
+        assertEquals("Bad credentials", result);
+
     }
-    
-    
-    
+
 }

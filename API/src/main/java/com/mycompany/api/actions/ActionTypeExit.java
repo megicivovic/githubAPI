@@ -5,8 +5,6 @@
  */
 package com.mycompany.api.actions;
 
-import static java.lang.System.exit;
-
 /**
  *
  * @author Magdalina Civovic Implements the behavior of exit command
@@ -18,9 +16,11 @@ public class ActionTypeExit implements ActionCommand {
     public ActionTypeExit(String command) {
         this.command = command;
     }
-        
+
     @Override
     public void execute(IGithubProvider githubProvider) {
-          githubProvider.executeActionTypeExit(command);
+        if (githubProvider.executeActionTypeExit(command) != null) {
+            System.out.println(githubProvider.executeActionTypeExit(command));
+        }
     }
 }

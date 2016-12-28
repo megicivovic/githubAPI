@@ -7,8 +7,6 @@ package com.mycompany.api.builders;
 
 import com.mycompany.api.actions.ActionCommand;
 import com.mycompany.api.actions.ActionTypeList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

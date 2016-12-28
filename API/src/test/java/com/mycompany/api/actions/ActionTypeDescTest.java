@@ -5,11 +5,7 @@
  */
 package com.mycompany.api.actions;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.fail;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -17,24 +13,10 @@ import org.junit.Test;
  * @author Magdalina Civovic
  */
 public class ActionTypeDescTest {
+
     MockedGithubProvider provider = new MockedGithubProvider();
+
     public ActionTypeDescTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -42,14 +24,30 @@ public class ActionTypeDescTest {
      */
     @Test
     public void testExecute() {
-      MockedGithubProvider provider = new MockedGithubProvider();
-      
-      String[] parts = new String[2];
-      parts[0]="megicivovic";
-      parts[1]="fsdfs/fsdfsd";
-      provider.executeActionTypeDesc(parts);
+        MockedGithubProvider provider = new MockedGithubProvider();
+
+        String[] parts = new String[2];
+
+        parts[0] = "megicivovic/githubAPI";
+        parts[1] = "megicivovic/eulerproblems";
+        provider.executeActionTypeDesc(parts);
+
+        assertEquals("repository full name:megicivovic/githubAPI, creation date:2016-12-24T10:33:44Z", provider.executeActionTypeDesc(parts)[0]);
+        assertEquals("repository full name:megicivovic/eulerproblems, creation date:2015-12-09T20:25:57Z", provider.executeActionTypeDesc(parts)[1]);
+
+        parts = new String[2];
+
+        parts[0] = "megicivovic";
+        parts[1] = "fasfa/ffdsfsd";
+        provider.executeActionTypeDesc(parts);
+
+        assertEquals("Wrong repo id format: megicivovic", provider.executeActionTypeDesc(parts)[0]);
+        assertEquals("Repository with id: fasfa/ffdsfsd not found", provider.executeActionTypeDesc(parts)[1]);
+
+        parts = new String[1];
+        parts[0] = "";
+        assertEquals("", provider.executeActionTypeDesc(parts)[0]);
+
     }
 
-
-    
 }

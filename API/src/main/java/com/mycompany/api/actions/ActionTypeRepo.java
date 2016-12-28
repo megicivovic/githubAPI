@@ -5,27 +5,9 @@
  */
 package com.mycompany.api.actions;
 
-import com.mycompany.api.main.GithubAPI;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import java.io.IOException;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.util.EntityUtils;
-
 /**
  *
- * @author Magdalina Civovic
- * Implements the behavior of "ghtool repo" command
+ * @author Magdalina Civovic Implements the behavior of "ghtool repo" command
  */
 public class ActionTypeRepo implements ActionCommand {
 
@@ -35,9 +17,10 @@ public class ActionTypeRepo implements ActionCommand {
         this.command = command;
     }
 
-      
-     @Override
+    @Override
     public void execute(IGithubProvider githubProvider) {
-        githubProvider.executeActionTypeRepo(command);
+        if (githubProvider.executeActionTypeRepo(command) != null) {
+            System.out.println(githubProvider.executeActionTypeRepo(command));
+        }
     }
 }

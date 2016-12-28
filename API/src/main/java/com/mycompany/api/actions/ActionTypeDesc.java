@@ -7,13 +7,13 @@ package com.mycompany.api.actions;
 
 /**
  *
- * @author Magdalina Civovic
- * Implements the behavior of "ghtool desc" command
+ * @author Magdalina Civovic Implements the behavior of "ghtool desc" command
  */
 public class ActionTypeDesc implements ActionCommand {
-/**
- * parts of command
- */
+
+    /**
+     * parts of command
+     */
     String[] parts;
 
     public ActionTypeDesc(String[] parts) {
@@ -22,7 +22,13 @@ public class ActionTypeDesc implements ActionCommand {
 
     @Override
     public void execute(IGithubProvider githubProvider) {
-        githubProvider.executeActionTypeDesc(parts);
+        String[] list = githubProvider.executeActionTypeDesc(parts);
+        if (list!=null){
+        for (int i = 0; i < list.length; i++) {
+            if(list[i]!=null)
+            System.out.println(list[i]);
+        }
+        }
     }
 
 }

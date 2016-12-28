@@ -5,20 +5,6 @@
  */
 package com.mycompany.api.actions;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-
 /**
  *
  * @author Magdalina Civovic Implements the behavior of "ghtool list" command
@@ -33,7 +19,15 @@ public class ActionTypeList implements ActionCommand {
 
     @Override
     public void execute(IGithubProvider githubProvider) {
-        githubProvider.executeActionTypeList(parts);
+        String[] list = githubProvider.executeActionTypeList(parts);
+        if (list != null) {
+            for (int i = 0; i < list.length; i++) {
+                if (list[i] != null) {
+                    System.out.println(list[i]);
+                }
+            }
+        }
+
     }
 
 }

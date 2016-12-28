@@ -17,7 +17,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.System.exit;
-import java.util.LinkedList;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,7 +35,7 @@ import org.apache.http.util.EntityUtils;
 
 /**
  *
- * @author Magdalina Civovic
+ * @author Magdalina Civovic Concrete command provider
  */
 public class GithubProvider implements IGithubProvider {
 
@@ -55,12 +54,13 @@ public class GithubProvider implements IGithubProvider {
         try {
             if (parts.length == 0 || parts[0].equals("")) {
                 try {
-                    displayHelp("manual.txt");
+                    displayHelp("description_command.txt");
                 } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
+                    list = new String[1];
+                    list[0] = ex.getMessage();
                 }
             } else if (parts.length > 0) {
-                 list = new String[parts.length];
+                list = new String[parts.length];
                 ExecutorService executor = Executors.newCachedThreadPool();
                 for (int i = 0; i < parts.length; i++) {
                     Runnable worker = new RepoInformationThread(parts[i], list, i);
@@ -69,88 +69,45 @@ public class GithubProvider implements IGithubProvider {
                 executor.shutdown();
                 while (!executor.isTerminated()) {
                 }
-
-                for (int i = 0; i < list.length; i++) {
-                    System.out.println(list[i]);
-                }
-                System.out.println("Finished all threads");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            list = new String[1];
+            list[0] = e.getMessage();
         }
         return list;
     }
 
-    /**
-     * Displays help file content
-     *
-     * @param filename
-     * @throws Exception
-     */
-    public void displayHelp(String filename) throws Exception {
-        BufferedReader br = null;
-        FileReader fr = null;
-
-        try {
-
-            fr = new FileReader(filename);
-            br = new BufferedReader(fr);
-
-            String currentLine;
-
-            br = new BufferedReader(new FileReader(filename));
-            while ((currentLine = br.readLine()) != null) {
-                System.out.println(currentLine);
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new Exception("Help file not found");
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                }
-                if (fr != null) {
-                    fr.close();
-                }
-            } catch (IOException ex) {
-                throw new Exception(ex.getMessage());
-            }
-
-        }
-    }
-
     @Override
     public String executeActionTypeExit(String command) {
+        String returnValue = null;
         try {
             if (!command.equals("")) {
-                throw new Exception("Invalid exit command");
+                returnValue = "Invalid exit command";
             }
             exit(0);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            returnValue = ex.getMessage();
         }
-        return "";
+        return returnValue;
     }
 
     @Override
     public String executeActionTypeHelp(String command) {
-
+        String returnValue = null;
         try {
             if (!command.equals("")) {
-                throw new Exception("Invalid exit command");
+                returnValue = "Invalid exit command";
             }
-            displayHelp("description_command.txt");
+            displayHelp("manual.txt");
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            returnValue = ex.getMessage();
         }
-        return "";
+        return returnValue;
     }
 
     @Override
-    public String executeActionTypeList(String[] parts) {
+    public String[] executeActionTypeList(String[] parts) {
+        String[] list = null;
         String url = getProperty("access.properties", "urlAllRepositories");
         String language = "";
         int number = 0;
@@ -163,31 +120,40 @@ public class GithubProvider implements IGithubProvider {
                 if (parts[0].equals("-n")) {
                     number = Integer.parseInt(parts[1]);
                 } else {
-                    throw new Exception("invalid list command");
+                    list = new String[1];
+                    list[0] = "invalid list command";
                 }
             } else if (parts.length == 3) {
                 if (parts[1].equals("-n")) {
                     language = parts[0];
                     number = Integer.parseInt(parts[2]);
                 } else {
-                    throw new Exception("invalid list command");
+                    list = new String[1];
+                    list[0] = "invalid list command";
                 }
             }
 
             if (!language.equals("")) {
                 url = getProperty("access.properties", "urlRepositoriesByLanguage").toString() + language + "&page=1";
+            } 
+            if (list==null){
+                list = getRepositories(number, url);
             }
-            getRepositories(number, url);
+            
 
         } catch (NumberFormatException numberFormatException) {
-            System.out.println("Incorrect number format");
+            list = new String[1];
+            list[0] = "Incorrect number format";
+
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            list = new String[1];
+            list[0] = ex.getMessage();
         }
-        return "";
+        return list;
     }
 
-    public void getRepositories(int numberOfRepositories, String url) throws Exception {
+    public String[] getRepositories(int numberOfRepositories, String url) throws Exception {
+        String[] list;
         try {
             int pageNumber = 1;
             int defaultNumberOfRepositories = Integer.parseInt(getProperty("access.properties", "defaultNumberOfRepos"));
@@ -195,12 +161,14 @@ public class GithubProvider implements IGithubProvider {
             if (numberOfRepositories == 0) {
                 numberOfRepositories = defaultNumberOfRepositories;
             }
-
+            list = new String[numberOfRepositories];
+            int listIndex = 0;
             while (numberOfRepositories > 30) {
                 JsonArray jarr = getJsonArray(url);
 
                 for (int i = 0; i < 30; i++) {
-                    printFullName(jarr, i);
+                    list[listIndex] = returnFullName(jarr, i);
+                    listIndex++;
                 }
                 numberOfRepositories -= 30;
                 pageNumber++;
@@ -208,18 +176,23 @@ public class GithubProvider implements IGithubProvider {
             }
             JsonArray jarr = getJsonArray(url);
             for (int i = 0; i < numberOfRepositories; i++) {
-                printFullName(jarr, i);
+                list[listIndex] = returnFullName(jarr, i);
+                listIndex++;
             }
 
         } catch (NumberFormatException | ParseException ex) {
-            System.out.println("Invalid number of repos");
+            list = new String[1];
+            list[0] = "Invalid number of repos";
         } catch (IOException | JsonSyntaxException ex) {
-            System.out.println(ex.getMessage());
+            list = new String[1];
+            list[0] = ex.getMessage();
         }
+        return list;
     }
 
     @Override
     public String executeActionTypeRepo(String command) {
+        String returnValue = null;
         try {
 
             if (command.length() == 0 || command.equals("")) {
@@ -234,29 +207,30 @@ public class GithubProvider implements IGithubProvider {
                 String username = GithubAPI.getInput();
 
                 System.out.println("Github password:");
-                String password = GithubAPI.getInput();
+                char[] passwordChar = System.console().readPassword();
+                String password = passwordChar.toString();
 
                 System.out.println("Authorization creating note");
                 String note = GithubAPI.getInput();
 
                 String token = getNewAuthorization(clientID, clientSecret, username, password, note);
 
-                createNewRepo(token);
+                returnValue = createNewRepo(token);
             } else {
-                throw new Exception("Invalid repo command");
+                returnValue = "Invalid repo command";
             }
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
+            returnValue = exception.getMessage();
         }
-        return "";
+        return returnValue;
     }
 
-    private void printFullName(JsonArray jarr, int i) throws Exception {
+    private String returnFullName(JsonArray jarr, int i) throws Exception {
         JsonObject jo = (JsonObject) jarr.get(i);
         checkForJsonError(jo);
 
         String fullName = getKeyValueFromJsonObject(jo, "full_name");
-        System.out.println(fullName);
+        return fullName;
     }
 
     public String checkForJsonError(JsonObject jo) throws Exception {
@@ -297,7 +271,7 @@ public class GithubProvider implements IGithubProvider {
         return jarr;
     }
 
-    private static String getJsonString(String url1) throws ParseException, IOException {
+    private String getJsonString(String url1) throws ParseException, IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(url1);
         request.addHeader("content-type", "application/json");
@@ -332,6 +306,7 @@ public class GithubProvider implements IGithubProvider {
         return value;
     }
 
+    @Override
     public String getNewAuthorization(String clientID, String clientSecret, String username, String password, String note) throws Exception {
         String url = getProperty("access.properties", "urlAuthorization");
         String access_token = "";
@@ -361,7 +336,8 @@ public class GithubProvider implements IGithubProvider {
         return access_token;
     }
 
-    public void createNewRepo(String token) throws Exception {
+    @Override
+    public String createNewRepo(String token) throws Exception {
         String url = getProperty("access.properties", "urlRepo");
 
         System.out.println("Name of the repo you are creating");
@@ -382,7 +358,7 @@ public class GithubProvider implements IGithubProvider {
         String fullName = getKeyValueFromJsonObject(jsonObject, "full_name");
 
         String id = jsonObject.get("id").toString();
-        System.out.println("Id of the created repository:" + id + ", full repository name:" + fullName);
+        return "Id of the created repository:" + id + ", full repository name:" + fullName;
 
     }
 
@@ -400,6 +376,47 @@ public class GithubProvider implements IGithubProvider {
             return jsonObject;
         } catch (IOException | ParseException | JsonSyntaxException exception) {
             throw new Exception(exception.getMessage());
+        }
+    }
+
+    /**
+     * Displays help file content
+     *
+     * @param filename
+     * @throws Exception
+     */
+    public void displayHelp(String filename) throws Exception {
+        BufferedReader br = null;
+        FileReader fr = null;
+
+        try {
+
+            fr = new FileReader(filename);
+            br = new BufferedReader(fr);
+
+            String currentLine;
+
+            br = new BufferedReader(new FileReader(filename));
+            while ((currentLine = br.readLine()) != null) {
+                System.out.println(currentLine);
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new Exception("Help file not found");
+        } catch (IOException e) {
+            throw new Exception(e.getMessage());
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (IOException ex) {
+                throw new Exception(ex.getMessage());
+            }
+
         }
     }
 

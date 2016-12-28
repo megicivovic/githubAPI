@@ -1,3 +1,2 @@
-ghtool desc <repo-id> <repo-id> ... - prikazuje neke informacije koje ti smatraš da su zanimljive o repozitorijumima čiji ID je prosleđen.
- Informacije o repozitorijumima treba da dohvatiš u paralelno (u više thread-ova), 
-za razliku od pristupa gde bi dohvatila jedan repozitorijum, pa nakon njega drugi i tako dalje
+ghtool desc <repo-id> <repo-id> 
+This command displays full name and date of creation of the github repositories whose ids were passed
