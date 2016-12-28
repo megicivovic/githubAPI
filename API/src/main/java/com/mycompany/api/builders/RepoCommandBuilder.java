@@ -12,13 +12,13 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Megi
+ * @author Magdalina Civovic
  */
 public class RepoCommandBuilder implements ICommandBuilder {
 
-      @Override
-    public ActionCommand getCommand(String command) {      
-            return new ActionTypeRepo(command);        
-          }
+    @Override
+    public ActionCommand getCommand(String command) {
+        return new ActionTypeRepo(command);
+    }
 
 }

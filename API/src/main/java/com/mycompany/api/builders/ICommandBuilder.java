@@ -9,7 +9,7 @@ import com.mycompany.api.actions.ActionCommand;
 
 /**
  *
- * @author Megi
+ * @author Magdalina Civovic
  */
 public interface ICommandBuilder {
 

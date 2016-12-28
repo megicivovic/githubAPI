@@ -3,6 +3,7 @@ package com.mycompany.api.main;
 import com.mycompany.api.actions.ActionCommand;
 import com.mycompany.api.actions.ActionTypeExit;
 import com.mycompany.api.actions.ActionTypeHelp;
+import com.mycompany.api.actions.GithubProvider;
 import com.mycompany.api.builders.CompositeCommandBuilder;
 import com.mycompany.api.builders.DescCommandBuilder;
 import com.mycompany.api.builders.ICommandBuilder;
@@ -13,11 +14,12 @@ import java.util.Scanner;
 
 /**
  *
- * @author Megi
+ * @author Magdalina Civovic
  */
 public class GithubAPI {
 
-    private static CompositeCommandBuilder mainBuilder = new CompositeCommandBuilder();
+    static CompositeCommandBuilder mainBuilder = new CompositeCommandBuilder();
+    static GithubProvider githubProvider = new GithubProvider();
 
     /**
      * @param args the command line arguments
@@ -62,7 +64,7 @@ public class GithubAPI {
 
         try {
             ActionCommand cmd = mainBuilder.getCommand(command);
-            cmd.execute();
+            cmd.execute(githubProvider);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());

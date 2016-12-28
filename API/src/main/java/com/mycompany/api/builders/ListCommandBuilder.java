@@ -12,13 +12,13 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Megi
+ * @author Magdalina Civovic
  */
 public class ListCommandBuilder implements ICommandBuilder {
 
     @Override
     public ActionCommand getCommand(String command) {
-        String[] parts = command.split(" ");        
+        String[] parts = command.split(" ");
         return new ActionTypeList(parts);
     }
 

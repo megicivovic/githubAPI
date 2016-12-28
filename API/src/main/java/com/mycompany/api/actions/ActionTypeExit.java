@@ -9,7 +9,7 @@ import static java.lang.System.exit;
 
 /**
  *
- * @author Megi
+ * @author Magdalina Civovic Implements the behavior of exit command
  */
 public class ActionTypeExit implements ActionCommand {
 
@@ -18,17 +18,9 @@ public class ActionTypeExit implements ActionCommand {
     public ActionTypeExit(String command) {
         this.command = command;
     }
-
+        
     @Override
-    public void execute() {
-
-        try {
-            if (!command.equals("")) {
-                throw new Exception("Invalid exit command");
-            }
-            exit(0);
-        } catch (Exception ex) {
-              System.out.println(ex.getMessage());
-        }
+    public void execute(IGithubProvider githubProvider) {
+          githubProvider.executeActionTypeExit(command);
     }
 }

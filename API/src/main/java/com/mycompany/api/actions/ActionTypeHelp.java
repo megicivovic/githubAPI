@@ -7,7 +7,7 @@ package com.mycompany.api.actions;
 
 /**
  *
- * @author Megi
+ * @author Magdalina Civovic Implements the behavior of "ghtool" command
  */
 public class ActionTypeHelp implements ActionCommand {
 
@@ -16,18 +16,11 @@ public class ActionTypeHelp implements ActionCommand {
     public ActionTypeHelp(String command) {
         this.command = command;
     }
-
-    @Override
-    public void execute() {
-
-        try {
-            if (!command.equals("")) {
-                throw new Exception("Invalid exit command");
-            }
-            ActionTypeDesc.displayHelp("description_command.txt");
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
+  
+    
+     @Override
+    public void execute(IGithubProvider githubProvider) {
+         githubProvider.executeActionTypeHelp(command);
     }
 
 }

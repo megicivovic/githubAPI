@@ -10,7 +10,7 @@ import com.mycompany.api.actions.ActionTypeDesc;
 
 /**
  *
- * @author Megi
+ * @author Magdalina Civovic
  */
 public class DescCommandBuilder implements ICommandBuilder {
 

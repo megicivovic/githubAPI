@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 /**
  *
- * @author Megi
+ * @author Magdalina Civovic
  */
 public class CompositeCommandBuilder implements ICommandBuilder {
 
