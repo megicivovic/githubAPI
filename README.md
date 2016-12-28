@@ -11,3 +11,4 @@ It supports the following commands:
 * `ghtool repo` - with this command you can create new repo on your github. For performing this command,
 application needs to be registered in [Authorized applications] (https://github.com/settings/applications) with a client ID and client secret, 
  and also you will be asked to provide your github credentials (this is and additional feature expanding the requests made by SBG team)
+* `exit` - to leave the application
