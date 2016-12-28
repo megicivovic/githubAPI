@@ -9,6 +9,6 @@ It supports the following commands:
  language. The X parameter is also not required as in the previous command.
 * `ghtool desc` - describes the usage of desc command
 * `ghtool repo` - with this command you can create new repo on your github. For performing this command,
-application needs to be registered in [Authorized applications] (https://github.com/settings/applications) with a client ID and client secret (these parameters are optional), 
+application needs to be registered in [Authorized applications] (https://github.com/settings/applications) with a client ID and client secret, 
  and also you will be asked to provide your github credentials (this is and additional feature expanding the requests made by SBG team)
 * `exit` - to leave the application
