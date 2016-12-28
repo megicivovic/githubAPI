@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  *
  * @author Magdalina Civovic
- * 
+ *
  */
 public class CompositeCommandBuilder implements ICommandBuilder {
 

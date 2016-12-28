@@ -7,8 +7,7 @@ package com.mycompany.api.actions;
 
 /**
  *
- * @author Magdalina Civovic
- * Implements the behavior of "ghtool" command
+ * @author Magdalina Civovic Implements the behavior of "ghtool" command
  */
 public class ActionTypeHelp implements ActionCommand {
 
@@ -16,15 +15,15 @@ public class ActionTypeHelp implements ActionCommand {
 
     public ActionTypeHelp(String command) {
         this.command = command;
-    }  
-    
-     @Override
+    }
+
+    @Override
     public void execute(IGithubProvider githubProvider) {
-        
-         if (githubProvider.executeActionTypeHelp(command) != null) {
+
+        if (githubProvider.executeActionTypeHelp(command) != null) {
             System.out.println(githubProvider.executeActionTypeHelp(command));
         }
-        
+
     }
 
 }

@@ -3,8 +3,10 @@ package com.mycompany.api.main;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mycompany.api.actions.GithubProvider;
+
 /**
  * Thread for handling repo information command
+ *
  * @author Magdalina Civovic
  */
 public class RepoInformationThread implements Runnable {
@@ -28,10 +30,12 @@ public class RepoInformationThread implements Runnable {
             }
         }
     }
-/**
- * Processes the command
- * @throws Exception 
- */
+
+    /**
+     * Processes the command
+     *
+     * @throws Exception
+     */
     private void processMessage() throws Exception {
         Thread.sleep(2000);
 
@@ -51,7 +55,7 @@ public class RepoInformationThread implements Runnable {
                     outputList[index] = "Repo with id: " + repoID + " doesn't exist";
                 }
             }
-            
+
             JsonObject jo = (JsonObject) jarr.get(0);
             GithubProvider.getInstance().checkForJsonError(jo);
             String fullName = GithubProvider.getInstance().getKeyValueFromJsonObject(jo, "full_name");

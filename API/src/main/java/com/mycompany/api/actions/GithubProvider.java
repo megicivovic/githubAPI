@@ -135,11 +135,10 @@ public class GithubProvider implements IGithubProvider {
 
             if (!language.equals("")) {
                 url = getProperty("access.properties", "urlRepositoriesByLanguage").toString() + language + "&page=1";
-            } 
-            if (list==null){
+            }
+            if (list == null) {
                 list = getRepositories(number, url);
             }
-            
 
         } catch (NumberFormatException numberFormatException) {
             list = new String[1];
@@ -152,6 +151,14 @@ public class GithubProvider implements IGithubProvider {
         return list;
     }
 
+    /**
+     * Gets a number of github repositories from an url
+     *
+     * @param numberOfRepositories
+     * @param url
+     * @return
+     * @throws Exception
+     */
     public String[] getRepositories(int numberOfRepositories, String url) throws Exception {
         String[] list;
         try {
@@ -225,6 +232,14 @@ public class GithubProvider implements IGithubProvider {
         return returnValue;
     }
 
+    /**
+     * returns json data by key full_name
+     *
+     * @param jarr
+     * @param i
+     * @return
+     * @throws Exception
+     */
     private String returnFullName(JsonArray jarr, int i) throws Exception {
         JsonObject jo = (JsonObject) jarr.get(i);
         checkForJsonError(jo);
@@ -233,6 +248,13 @@ public class GithubProvider implements IGithubProvider {
         return fullName;
     }
 
+    /**
+     * Check for error message in json data
+     *
+     * @param jo
+     * @return
+     * @throws Exception
+     */
     public String checkForJsonError(JsonObject jo) throws Exception {
 
         String message = null;
@@ -245,12 +267,29 @@ public class GithubProvider implements IGithubProvider {
 
     }
 
+    /**
+     * Gets json data by key
+     *
+     * @param jo
+     * @param key
+     * @return
+     */
     public String getKeyValueFromJsonObject(JsonObject jo, String key) {
         String keyValue = jo.get(key).toString();
         keyValue = keyValue.substring(1, keyValue.length() - 1);
         return keyValue;
     }
 
+    /**
+     * Gets json array from json string
+     *
+     * @param url
+     * @return
+     * @throws IOException
+     * @throws JsonSyntaxException
+     * @throws ParseException
+     * @throws Exception
+     */
     public JsonArray getJsonArray(String url) throws IOException, JsonSyntaxException, ParseException, Exception {
         String json = getJsonString(url);
         JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
@@ -261,6 +300,17 @@ public class GithubProvider implements IGithubProvider {
         return jarr;
     }
 
+    /**
+     * Gets json array from json string, with different error
+     *
+     * @param url
+     * @param repoID
+     * @return
+     * @throws IOException
+     * @throws JsonSyntaxException
+     * @throws ParseException
+     * @throws Exception
+     */
     public JsonArray getJsonRepoInformation(String url, String repoID) throws IOException, JsonSyntaxException, ParseException, Exception {
         String json = getJsonString(url);
         JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
@@ -271,6 +321,14 @@ public class GithubProvider implements IGithubProvider {
         return jarr;
     }
 
+    /**
+     * Performs http get request with json payload
+     *
+     * @param url1
+     * @return
+     * @throws ParseException
+     * @throws IOException
+     */
     private String getJsonString(String url1) throws ParseException, IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(url1);
@@ -280,6 +338,13 @@ public class GithubProvider implements IGithubProvider {
         return json;
     }
 
+    /**
+     * Gets key value from property file
+     *
+     * @param filename
+     * @param key
+     * @return
+     */
     public String getProperty(String filename, String key) {
         InputStream stream = null;
         String value = "";
@@ -362,6 +427,16 @@ public class GithubProvider implements IGithubProvider {
 
     }
 
+    /**
+     * Performs http post request with json payload
+     *
+     * @param url
+     * @param header1
+     * @param header2
+     * @param params
+     * @return
+     * @throws Exception
+     */
     private JsonObject getJsonObjectFromPostRequest(String url, Header header1, Header header2, StringEntity params) throws Exception {
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();

@@ -86,8 +86,8 @@ public class ActionTypeRepoTest {
             String result = provider.getNewAuthorization(clientID, clientSecret, username, password, note);
             fail("Username passed as null!");
         } catch (Exception e) {
-            
-        }        
+
+        }
 
     }
 
@@ -101,9 +101,9 @@ public class ActionTypeRepoTest {
         String result = provider.createNewRepo(token);
 
         assertEquals("megicivovic/myCoolRepo", result);
-       
-         token = "fsgsgdfgd";
-         result = provider.createNewRepo(token);
+
+        token = "fsgsgdfgd";
+        result = provider.createNewRepo(token);
 
         assertEquals("Bad credentials", result);
 

@@ -38,9 +38,10 @@ public class GithubAPI {
             }
         }
     }
-/**
- * Builds the initial structure of command builders
- */
+
+    /**
+     * Builds the initial structure of command builders
+     */
     private static void buildCompositeStructure() {
         CompositeCommandBuilder ghtoolBuilder = new CompositeCommandBuilder();
         ghtoolBuilder.registerBuilder("list", new ListCommandBuilder());
@@ -61,11 +62,13 @@ public class GithubAPI {
             }
         });
     }
-/**
- * Handles the command from parameter
- * @param command
- * 
- */
+
+    /**
+     * Handles the command from parameter
+     *
+     * @param command
+     *
+     */
     private static void handleCommand(String command) {
 
         try {
@@ -76,12 +79,14 @@ public class GithubAPI {
             System.out.println(e.getMessage());
         }
     }
-/**
- * returns the input from command line
- * @return
- * @throws Exception 
- * 
- */
+
+    /**
+     * returns the input from command line
+     *
+     * @return
+     * @throws Exception
+     *
+     */
     public static String getInput() throws Exception {
         Scanner scanner = new Scanner(System.in);
         String input = "";

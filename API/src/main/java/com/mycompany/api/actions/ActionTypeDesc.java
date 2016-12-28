@@ -23,11 +23,12 @@ public class ActionTypeDesc implements ActionCommand {
     @Override
     public void execute(IGithubProvider githubProvider) {
         String[] list = githubProvider.executeActionTypeDesc(parts);
-        if (list!=null){
-        for (int i = 0; i < list.length; i++) {
-            if(list[i]!=null)
-            System.out.println(list[i]);
-        }
+        if (list != null) {
+            for (int i = 0; i < list.length; i++) {
+                if (list[i] != null) {
+                    System.out.println(list[i]);
+                }
+            }
         }
     }
 
