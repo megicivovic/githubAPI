@@ -2,9 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mycompany</groupId>
-    <artifactId>API</artifactId>
+    <artifactId>githubAPI</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <name>githubAPI</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
@@ -42,9 +43,19 @@
         </dependency>
     </dependencies>
     <build>
+        <resources>          
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>access.properties</include>           
+                    <include>manual.txt</include>           
+                    <include>description_command.txt</include>
+                </includes>            
+            </resource>
+        </resources>
         <plugins>
-            <plugin>
-                <!-- Build an executable JAR -->
+<!--            <plugin>
+                 Build an executable JAR 
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
@@ -55,19 +66,9 @@
                             <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>com.mycompany.api.main.GithubAPI</mainClass>
                         </manifest>
-                    </archive>
-                    <resources>          
-                        <resource>
-                            <directory>src/main/resources</directory>
-                            <includes>
-                                <include>access.properties</include>           
-                                <include>manual.txt</include>           
-                                <include>description_command.txt</include>
-                            </includes>            
-                        </resource>
-                    </resources>
+                    </archive>                   
                 </configuration>
-            </plugin>    
+            </plugin>    -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -100,6 +101,31 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.mycompany.api.main.GithubAPI</mainClass>
+                        </manifest>
+                    </archive>
+
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+
+                </configuration>
+            </plugin> 
         </plugins>
     </build>
 </project>
