@@ -9,8 +9,8 @@ import com.mycompany.api.builders.DescCommandBuilder;
 import com.mycompany.api.builders.ICommandBuilder;
 import com.mycompany.api.builders.ListCommandBuilder;
 import com.mycompany.api.builders.RepoCommandBuilder;
+import java.io.Console;
 import java.io.IOException;
-import java.util.Scanner;
 
 /**
  *
@@ -29,10 +29,15 @@ public class GithubAPI {
         buildCompositeStructure();
 
         while (true) {
-            System.out.println("Type a command>");
+            System.out.print("Type a command>");
 
             try {
-                handleCommand(getInput());
+                String input = getInput();
+                if (input == null || input.length() == 0) {
+                    System.out.println("Command is empty or null");
+                    continue;
+                }
+                handleCommand(input);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -88,12 +93,14 @@ public class GithubAPI {
      *
      */
     public static String getInput() throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        String input = "";
-        input = scanner.nextLine().trim();
-        if (input == null || input.length() == 0) {
-            throw new Exception("Command is empty or null");
-        }
+        Console console = System.console();
+        String input = console.readLine();
+        return input;   
+    }
+    
+    public static String getPassword() throws Exception {
+        Console console = System.console();
+        String input = new String(console.readPassword());        
         return input;
     }
 

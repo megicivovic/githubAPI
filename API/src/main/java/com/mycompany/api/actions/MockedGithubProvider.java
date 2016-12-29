@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.api.actions;
 
 /**
  *
- * @author Magdalina Civovic Mocked command provider
+ * @author Magdalina Civovic
+ * Mocked command provider
  */
 public class MockedGithubProvider implements IGithubProvider {
 
@@ -37,17 +33,22 @@ public class MockedGithubProvider implements IGithubProvider {
             }
         }
         return list;
-
     }
 
     @Override
     public String executeActionTypeExit(String command) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (command.equals("jkl")) {
+            return "Invalid exit command";
+        }
+        return "";
     }
 
     @Override
     public String executeActionTypeHelp(String command) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (command.equals("ghi")) {
+            return "Invalid help command";
+        }
+        return "";
     }
 
     @Override
@@ -95,7 +96,6 @@ public class MockedGithubProvider implements IGithubProvider {
                 result = "Username may not be null";
             }
         }
-
         return result;
     }
 
@@ -107,7 +107,6 @@ public class MockedGithubProvider implements IGithubProvider {
         } else if (token.equals("fsgsgdfgd")) {
             result = "Bad credentials";
         }
-
         return result;
     }
 

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.api.actions;
 
 import com.google.gson.JsonArray;
@@ -16,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import static java.lang.System.exit;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -35,7 +31,8 @@ import org.apache.http.util.EntityUtils;
 
 /**
  *
- * @author Magdalina Civovic Concrete command provider
+ * @author Magdalina Civovic 
+ * Concrete command provider
  */
 public class GithubProvider implements IGithubProvider {
 
@@ -82,7 +79,7 @@ public class GithubProvider implements IGithubProvider {
         String returnValue = null;
         try {
             if (!command.equals("")) {
-                returnValue = "Invalid exit command";
+                throw new Exception("Invalid exit command");
             }
             exit(0);
         } catch (Exception ex) {
@@ -96,7 +93,7 @@ public class GithubProvider implements IGithubProvider {
         String returnValue = null;
         try {
             if (!command.equals("")) {
-                returnValue = "Invalid exit command";
+                throw new Exception("Invalid help command");
             }
             displayHelp("manual.txt");
         } catch (Exception ex) {
@@ -108,7 +105,8 @@ public class GithubProvider implements IGithubProvider {
     @Override
     public String[] executeActionTypeList(String[] parts) {
         String[] list = null;
-        String url = getProperty("access.properties", "urlAllRepositories");
+        String url = getProperty("access.properties", "urlAllRepositories");        
+        
         String language = "";
         int number = 0;
 
@@ -214,8 +212,7 @@ public class GithubProvider implements IGithubProvider {
                 String username = GithubAPI.getInput();
 
                 System.out.println("Github password:");
-                char[] passwordChar = System.console().readPassword();
-                String password = passwordChar.toString();
+                String password = GithubAPI.getInput();
 
                 System.out.println("Authorization creating note");
                 String note = GithubAPI.getInput();
@@ -352,9 +349,7 @@ public class GithubProvider implements IGithubProvider {
             Properties prop = new Properties();
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             stream = loader.getResourceAsStream(filename);
-            prop.load(stream);
-
-            // get the property value and print it out
+            prop.load(stream);     
             value = prop.getProperty(key);
 
         } catch (IOException ex) {
@@ -396,9 +391,7 @@ public class GithubProvider implements IGithubProvider {
         if (access_token == null) {
             throw new Exception("Bad credentials");
         }
-        System.out.println(access_token);
-
-        return access_token;
+       return access_token;
     }
 
     @Override
@@ -424,7 +417,6 @@ public class GithubProvider implements IGithubProvider {
 
         String id = jsonObject.get("id").toString();
         return "Id of the created repository:" + id + ", full repository name:" + fullName;
-
     }
 
     /**
@@ -465,13 +457,10 @@ public class GithubProvider implements IGithubProvider {
         FileReader fr = null;
 
         try {
-
-            fr = new FileReader(filename);
-            br = new BufferedReader(fr);
-
             String currentLine;
+            InputStream in = getClass().getResourceAsStream("/" + filename);
+            br = new BufferedReader(new InputStreamReader(in));
 
-            br = new BufferedReader(new FileReader(filename));
             while ((currentLine = br.readLine()) != null) {
                 System.out.println(currentLine);
             }

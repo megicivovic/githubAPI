@@ -41,9 +41,7 @@ public class RepoInformationThread implements Runnable {
 
         String[] id = repoID.split("/");
         if (id.length < 2) {
-            synchronized (outputList) {
-                outputList[index] = "Wrong repo id format: " + id[0];
-            }
+            outputList[index] = "Wrong repo id format: " + id[0];
         } else {
             String user = id[0];
             String repoName = id[1];
@@ -51,9 +49,7 @@ public class RepoInformationThread implements Runnable {
             String url = GithubProvider.getInstance().getProperty("access.properties", "urlRepoInfo") + repoName + "in:name+user:" + user;
             JsonArray jarr = GithubProvider.getInstance().getJsonRepoInformation(url, repoID);
             if (jarr == null) {
-                synchronized (outputList) {
-                    outputList[index] = "Repo with id: " + repoID + " doesn't exist";
-                }
+                outputList[index] = "Repo with id: " + repoID + " doesn't exist";
             }
 
             JsonObject jo = (JsonObject) jarr.get(0);
@@ -61,9 +57,8 @@ public class RepoInformationThread implements Runnable {
             String fullName = GithubProvider.getInstance().getKeyValueFromJsonObject(jo, "full_name");
             String date = GithubProvider.getInstance().getKeyValueFromJsonObject(jo, "created_at");
 
-            synchronized (outputList) {
-                outputList[index] = "repository full name:" + fullName + ", creation date:" + date;
-            }
+            outputList[index] = "repository full name:" + fullName + ", creation date:" + date;
+
         }
     }
 }
